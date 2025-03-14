@@ -8,7 +8,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --export="HF_HOME=/netscratch/nauen/HF_HOME/,NLTK_DATA=/netscratch/nauen/NLTK_DATA/,TQDM_DISABLE=1"
-#SBATCH --job-name="Make ImageNet diffs (train)"
+#SBATCH --job-name="Make ImageNet diffs (val)"
 #SBATCH --output=/netscratch/nauen/slurm/%x-%j-%N-%a.out
 #SBATCH --wait
 
