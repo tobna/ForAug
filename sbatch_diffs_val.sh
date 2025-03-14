@@ -16,4 +16,4 @@ srun -K \
   --container-image=/netscratch/nauen/images/create_in_diff.sqsh \
   --container-workdir="`pwd`" \
   --container-mounts=/netscratch/$USER:/netscratch/$USER,/fscratch/$USER:/fscratch/$USER,/ds-sds:/ds-sds:ro,/ds:/ds:ro,"`pwd`":"`pwd`" \
-  python3 make_diffs.py -n 40 -id $SLURM_ARRAY_TASK_ID -w 16 -in /ds-sds/images/imagenet -fn /fscratch/nauen/INSegment_v1_f1 -s val -o /netscratch/nauen/datasets/INDiffs
+  python3 make_diffs.py -n 40 -id $SLURM_ARRAY_TASK_ID -w 16 -in /ds-sds/images/imagenet -fn /fscratch/nauen/datasets/INSegment_v1_f1 -s val -o /netscratch/nauen/datasets/INDiffs
