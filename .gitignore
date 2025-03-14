@@ -199,6 +199,7 @@ data_tmp.json
 evaluation/data/data_final.json
 evaluation/figures
 out_test
+.vscode
 
 .wandb.apikey
 wandb/
