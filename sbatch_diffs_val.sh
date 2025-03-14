@@ -2,7 +2,7 @@
 
 #SBATCH --array=0-39
 #SBATCH --time=1-0
-#SBATCH --mem=16G
+#SBATCH --mem=2G
 #SBATCH --partition=H200,H100,H100-PCI,A100-PCI,A100-40GB,A100-80GB
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
