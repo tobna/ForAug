@@ -30,6 +30,7 @@ if __name__ == "__main__":
         "-id", type=int, default=0, help="Id of this worker process (for splitting into multiple processes)"
     )
     parser.add_argument("-n", "--num_processes", type=int, default=1, help="Number of worker processes")
+    parser.add_argument("--overwrite", action="store_true", help="Overwrite existing files in output folder")
 
     args = parser.parse_args()
     assert args.id < args.num_processes, f"Id {args.id} is greater than number of processes {args.num_processes}"
@@ -56,6 +57,8 @@ if __name__ == "__main__":
         # print(key)
         folder = os.path.join(args.output, args.split, key.split("/")[0])
         os.makedirs(folder, exist_ok=True)
+        if os.path.exists(os.path.join(folder, f"{key.split('/')[-1]}.pkl")) and not args.overwrite:
+            continue
 
         in_img = Image.open(os.path.join(args.imagenet, args.split, f"{key}.JPEG")).convert("RGB")
 
