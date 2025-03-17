@@ -81,12 +81,14 @@ if __name__ == "__main__":
             bg_img = np.array(bg_img)
             bg_diff = bg_img.astype(np.int64) - in_img.astype(np.int64)
             patch["bg_diff"] = bg_diff
+            bg_shape = bg_img.shape
         else:
             max_size = max(in_img.size)
             if max_size > 512:
                 goal_size = (round(in_img.size[0] * 512 / max_size), round(in_img.size[1] * 512 / max_size))
                 in_img = in_img.resize(goal_size)
             in_img = np.array(in_img)
+            bg_shape = in_img.shape
 
         if fg_img is not None:
             fg_img = np.array(fg_img)
@@ -99,8 +101,8 @@ if __name__ == "__main__":
                         itertools.repeat(in_img),
                         itertools.repeat(fg_img),
                         itertools.product(
-                            range(0, bg_img.shape[1] - fg_img.shape[1] + 1),
-                            range(0, bg_img.shape[0] - fg_img.shape[0] + 1),
+                            range(0, bg_shape[1] - fg_img.shape[1] + 1),
+                            range(0, bg_shape[0] - fg_img.shape[0] + 1),
                         ),
                         itertools.repeat(fg_mask),
                     ),
