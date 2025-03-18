@@ -12,7 +12,7 @@ This is the public code repository for the paper [_ForAug: Recombining Foregroun
 
 ### Downloading ForNet
 
-We will soon release the code for creating (or downloading) the ForNet dataset, aswell as code to use it.
+We will soon release the code for creating (or downloading) the ForNet dataset, as well as code to use it.
 
 ### Creating ForNet from Scratch
 
