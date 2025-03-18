@@ -16,7 +16,7 @@ parser.add_argument("-o", "--output", type=str, required=True, help="Output fold
 args = parser.parse_args()
 
 for part in ["train", "val"]:
-    patch_files = ["val.zip"] if part == "val" else [f"{part}_{i}.zip" for i in range(1, 17)]
+    patch_files = ["val.zip"] if part == "val" else [f"{part}_{i}.zip" for i in range(0, 19)]
     for patch_file_name in tqdm(patch_files, desc=f"processing {part}", position=0):
         with zipfile.ZipFile(os.path.join(args.patch, patch_file_name), "r") as patch_file:
             patches = set(patch_file.namelist())
