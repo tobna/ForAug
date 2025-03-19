@@ -7,7 +7,11 @@ from math import floor
 
 import numpy as np
 import PIL
-from datadings.torch import Compose
+
+try:
+    from datadings.torch import Compose
+except ImportError:
+    from torchvision.transforms import Compose
 from datasets.data_utils import apply_dense_transforms
 from PIL import Image, ImageFilter
 from torch.utils.data import Dataset, get_worker_info
