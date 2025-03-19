@@ -71,6 +71,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--patch", type=str, required=True, help="Patch folder")
     parser.add_argument("-in", "--imagenet", type=str, required=True, help="ImageNet folder")
     parser.add_argument("-o", "--output", type=str, required=True, help="Output folder")
+    parser.add_argument("--keep", action="store_true", help="Keep patch files after extraction")
 
     args = parser.parse_args()
 
@@ -80,8 +81,11 @@ if __name__ == "__main__":
     print(f"INFO: Using {max_parallel_workers} parallel workers")
 
     for part in ["train", "val"]:
-        patch_files = ["val.zip"] if part == "val" else [f"{part}_{i}.zip" for i in range(0, 19)]
+        patch_files = ["val.zip"] if part == "val" else [f"{part}_{i}.zip" for i in range(20)]
         for patch_file_name in tqdm(patch_files, desc=f"processing {part}", position=0, disable=part == "val"):
+            if not os.path.exists(os.path.join(args.patch, patch_file_name)):
+                tqdm.write(f"INFO: {patch_file_name} not found. Assuming it was already processed...")
+                continue
             with zipfile.ZipFile(os.path.join(args.patch, patch_file_name), "r") as patch_file:
                 patches = set(patch_file.namelist())
             for p_ in patches:
@@ -112,3 +116,6 @@ if __name__ == "__main__":
                 position=1,
                 total=len(patches),
             )
+
+            if not args.keep:
+                os.remove(os.path.join(args.patch, patch_file_name))
