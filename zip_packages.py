@@ -13,7 +13,6 @@ args = parser.parse_args()
 
 
 def _file_gather(folder, part, images, classes, q, ret_dict):
-    update_dict[f"{part}/{images}"] = 0
     files = []
     ending = "WEBP" if images == "foregrounds" else "JPEG"
     for idx, c in enumerate(classes):
