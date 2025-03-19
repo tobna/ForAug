@@ -12,10 +12,11 @@ try:
     from datadings.torch import Compose
 except ImportError:
     from torchvision.transforms import Compose
-from datasets.data_utils import apply_dense_transforms
 from PIL import Image, ImageFilter
 from torch.utils.data import Dataset, get_worker_info
 from torchvision import transforms as T
+
+from utils import apply_dense_transforms
 
 
 class ForNet(Dataset):
