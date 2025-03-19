@@ -79,7 +79,7 @@ for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
         folder = f"{part}/{images}"
         print(f"Closing {folder}")
-        pbars[folder].close()
+        pbars[folder].join()
 
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
