@@ -96,7 +96,9 @@ for part in ["train", "val"]:
         p = Process(target=_zip_files, args=(args.folder, part, images, list(files[f"{part}/{images}"]), update_q))
         p.start()
         processes[f"{part}/{images}"] = p
-        pbars[f"{part}/{images}"] = tqdm(total=len(classes), desc=f"Zipping {part}/{images}", position=pos)
+        pbars[f"{part}/{images}"] = tqdm(
+            total=len(files[f"{part}/{images}"]), desc=f"Zipping {part}/{images}", position=pos
+        )
         last_update[f"{part}/{images}"] = 0
         pos += 1
 
