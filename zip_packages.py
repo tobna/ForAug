@@ -69,6 +69,7 @@ while running_processes > 0:
         last_update[folder] = idx
         if idx == len(classes):
             running_processes -= 1
+            pbars[folder].refresh()
     sleep(0.01)
 
 sleep(0.1)
