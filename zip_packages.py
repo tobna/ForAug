@@ -61,19 +61,25 @@ for part in ["train", "val"]:
         last_update[f"{part}/{images}"] = 0
         pos += 1
 
-while len(processes) > 0:
+running_processes = 4
+while running_processes > 0:
     while not update_q.empty():
         folder, idx = update_q.get()
         pbars[folder].update(idx - last_update[folder])
         last_update[folder] = idx
         if idx == len(classes):
-            print(f"Closing {folder}")
-            pbars[folder].close()
-            del processes[folder]
+            running_processes -= 1
     sleep(0.01)
 
+sleep(0.1)
 for pbar in pbars.values():
     pbar.close()
+
+for part in ["train", "val"]:
+    for images in ["foregrounds", "backgrounds"]:
+        folder = f"{part}/{images}"
+        print(f"Closing {folder}")
+        pbars[folder].close()
 
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
