@@ -23,9 +23,9 @@ def _file_gather(folder, part, images, classes, q, ret_dict):
 
 
 def _zip_files(folder, part, images, filelist, q):
-    with zipfile.ZipFile(os.path.join(args.folder, f"{args.images}_{args.part}.zip"), "w") as zf:
+    with zipfile.ZipFile(os.path.join(folder, f"{images}_{part}.zip"), "w") as zf:
         for idx, file in enumerate(files):
-            zf.write(os.path.join(args.folder, args.part, args.images, file), file)
+            zf.write(os.path.join(folder, part, images, file), file)
             q.put("{args.part}/{args.images}", idx + 1)
 
 
