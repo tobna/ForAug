@@ -63,6 +63,7 @@ def _extract(args):
 max_parallel_workers = multiprocessing.cpu_count()
 if os.environ.get("SLURM_JOB_CPUS_PER_NODE", None):
     max_parallel_workers = int(os.environ["SLURM_JOB_CPUS_PER_NODE"])
+print(f"INFO: Using {max_parallel_workers} parallel workers")
 
 for part in ["train", "val"]:
     patch_files = ["val.zip"] if part == "val" else [f"{part}_{i}.zip" for i in range(0, 19)]
