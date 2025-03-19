@@ -89,6 +89,6 @@ for part in ["train", "val"]:
             len(files[f"{part}/{images}"]) == _EXPECTED_FILES
         ), f"{part}/{images}: Expected {_EXPECTED_FILES} files, got {len(files[f'{part}/{images}'])}"
     Popen(
-        f"zip -r0 {images}_{part}.zip {part}/{images} | pv -lep -s {len(files[f'{part}/{images}']) + len(classes)}",
+        f"/bin/zip -r0 {images}_{part}.zip {part}/{images} | /bin/pv -lep -s {len(files[f'{part}/{images}']) + len(classes)}",
         cwd=args.folder,
     ).wait()
