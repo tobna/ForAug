@@ -21,6 +21,12 @@ def _extract(args):
     file_ending = args[4]
     in_path = args[5]
     part = args[6]
+
+    if os.path.exists(os.path.join(outpath, part, "foregrounds", patch_name + ".WEBP")) and os.path.exists(
+        os.path.join(outpath, part, "backgrounds", patch_name + ".JPEG")
+    ):
+        return
+
     with zipfile.ZipFile(zip_path, "r") as patch_file, (
         patch_file.open(f"{name_start}{patch_name}.{file_ending}", "r")
         if ending == "pkl"
