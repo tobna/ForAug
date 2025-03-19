@@ -95,7 +95,7 @@ pos = 0
 last_update = {}
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
-        p = Process(target=_zip_files, args=(args.folder, part, images, list(files[f"{part}/{images}"]), update_q))
+        p = Process(target=_zip_files, args=(args.folder, part, images, files[f"{part}/{images}"], update_q))
         p.start()
         processes[f"{part}/{images}"] = p
         pbars[f"{part}/{images}"] = tqdm(
