@@ -58,13 +58,14 @@ pos = 0
 last_update = {}
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
-        pbars[f"{part}/{images}"] = tqdm(total=len(classes), desc=f"{part}/{images}", position=pos)
+        pbars[f"{part}/{images}"] = tqdm(total=len(classes), desc=f"{part}/{images}", position=pos, disable=True)
         last_update[f"{part}/{images}"] = 0
         pos += 1
 
 while len(processes) > 0:
     for folder, idx in update_dict.items():
-        pbars[folder].update(last_update[folder] - idx)
+        print(folder, idx, last_update[folder])
+        pbars[folder].update(idx - last_update[folder])
         last_update[folder] = idx
         if idx == len(classes):
             pbars[folder].close()
