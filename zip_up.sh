@@ -1,5 +1,6 @@
 #! /bin/bash
 
+path = "`pwd`"
 cd $1
 
 echo "zip train/foregrounds"
@@ -14,3 +15,4 @@ zip -r0 foregrounds_val.zip val/foregrounds | pv -lep -s 50751 > /dev/null
 echo "zip val/backgrounds"
 zip -r0 backgrounds_val.zip val/backgrounds | pv -lep -s 50751 > /dev/null
 
+cd $path
