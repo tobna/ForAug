@@ -11,13 +11,6 @@ from PIL import Image
 from tqdm.auto import tqdm
 from tqdm.contrib.concurrent import process_map
 
-parser = argparse.ArgumentParser(description="ImageNet Patches -> ForNet")
-parser.add_argument("-p", "--patch", type=str, required=True, help="Patch folder")
-parser.add_argument("-in", "--imagenet", type=str, required=True, help="ImageNet folder")
-parser.add_argument("-o", "--output", type=str, required=True, help="Output folder")
-
-args = parser.parse_args()
-
 
 def _extract(args):
     # zip_path, patch_name, outpath, name_start, file_ending, in_path, part = *args
@@ -67,41 +60,49 @@ def _extract(args):
         Image.fromarray(fg_img).save(os.path.join(outpath, part, "foregrounds", patch_name + ".WEBP"))
 
 
-max_parallel_workers = multiprocessing.cpu_count()
-if os.environ.get("SLURM_JOB_CPUS_PER_NODE", None):
-    max_parallel_workers = int(os.environ["SLURM_JOB_CPUS_PER_NODE"])
-print(f"INFO: Using {max_parallel_workers} parallel workers")
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="ImageNet Patches -> ForNet")
+    parser.add_argument("-p", "--patch", type=str, required=True, help="Patch folder")
+    parser.add_argument("-in", "--imagenet", type=str, required=True, help="ImageNet folder")
+    parser.add_argument("-o", "--output", type=str, required=True, help="Output folder")
 
-for part in ["train", "val"]:
-    patch_files = ["val.zip"] if part == "val" else [f"{part}_{i}.zip" for i in range(0, 19)]
-    for patch_file_name in tqdm(patch_files, desc=f"processing {part}", position=0, disable=part == "val"):
-        with zipfile.ZipFile(os.path.join(args.patch, patch_file_name), "r") as patch_file:
-            patches = set(patch_file.namelist())
-        for p_ in patches:
-            if p_.endswith(".pkl") or p_.endswith(".pkl.gz"):
-                ex_name = p_
-                ending = "pkl" if p_.endswith(".pkl") else "pkl.gz"
-                break
-        patches = sorted(
-            ["/".join(pf.split("/")[-2:]).split(".")[0] for pf in patches if "/" in pf and pf.endswith(ending)]
-        )
-        patch_name_start = "/".join(ex_name.split("/")[:-2])
-        if len(patch_name_start) > 0:
-            patch_name_start += "/"
+    args = parser.parse_args()
 
-        process_map(
-            _extract,
-            zip(
-                itertools.repeat(os.path.join(args.patch, patch_file_name)),
-                patches,
-                itertools.repeat(args.output),
-                itertools.repeat(patch_name_start),
-                itertools.repeat(ending),
-                itertools.repeat(args.imagenet),
-                itertools.repeat(part),
-            ),
-            max_workers=max_parallel_workers,
-            desc=f"extracting {patch_file_name}",
-            position=1,
-            total=len(patches),
-        )
+    max_parallel_workers = multiprocessing.cpu_count()
+    if os.environ.get("SLURM_JOB_CPUS_PER_NODE", None):
+        max_parallel_workers = int(os.environ["SLURM_JOB_CPUS_PER_NODE"])
+    print(f"INFO: Using {max_parallel_workers} parallel workers")
+
+    for part in ["train", "val"]:
+        patch_files = ["val.zip"] if part == "val" else [f"{part}_{i}.zip" for i in range(0, 19)]
+        for patch_file_name in tqdm(patch_files, desc=f"processing {part}", position=0, disable=part == "val"):
+            with zipfile.ZipFile(os.path.join(args.patch, patch_file_name), "r") as patch_file:
+                patches = set(patch_file.namelist())
+            for p_ in patches:
+                if p_.endswith(".pkl") or p_.endswith(".pkl.gz"):
+                    ex_name = p_
+                    ending = "pkl" if p_.endswith(".pkl") else "pkl.gz"
+                    break
+            patches = sorted(
+                ["/".join(pf.split("/")[-2:]).split(".")[0] for pf in patches if "/" in pf and pf.endswith(ending)]
+            )
+            patch_name_start = "/".join(ex_name.split("/")[:-2])
+            if len(patch_name_start) > 0:
+                patch_name_start += "/"
+
+            process_map(
+                _extract,
+                zip(
+                    itertools.repeat(os.path.join(args.patch, patch_file_name)),
+                    patches,
+                    itertools.repeat(args.output),
+                    itertools.repeat(patch_name_start),
+                    itertools.repeat(ending),
+                    itertools.repeat(args.imagenet),
+                    itertools.repeat(part),
+                ),
+                max_workers=max_parallel_workers,
+                desc=f"extracting {patch_file_name}",
+                position=1,
+                total=len(patches),
+            )
