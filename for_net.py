@@ -85,18 +85,45 @@ class ForNet(Dataset):
             background_combination in self._back_combs
         ), f"background_combination={background_combination} is not supported. Use one of {self._back_combs}"
 
-        try:
-            with zipfile.ZipFile(f"{root}/backgrounds_{'train' if train else 'val'}.zip", "r") as bg_zip:
-                self.backgrounds = [f for f in bg_zip.namelist() if f.endswith(".JPEG")]
-            with zipfile.ZipFile(f"{root}/foregrounds_{'train' if train else 'val'}.zip", "r") as fg_zip:
-                self.foregrounds = [f for f in fg_zip.namelist() if f.endswith(".WEBP")]
-        except FileNotFoundError as e:
-            print(
-                f"RecombinationNet: {e}. Make sure to have the background and foreground zips in the root directory: found {os.listdir(root)}"
-            )
-            raise e
+        if (not os.path.exists(f"{root}/backgrounds_{'train' if train else 'val'}.zip")) and os.path.exists(
+            os.path.join(root, "train" if train else "val", "backgrounds")
+        ):
+            self._mode = "folder"
+        else:
+            self._mode = "zip"
 
-        classes = set([f.split("/")[-2] for f in self.foregrounds])
+        if self._mode == "zip":
+            try:
+                with zipfile.ZipFile(f"{root}/backgrounds_{'train' if train else 'val'}.zip", "r") as bg_zip:
+                    self.backgrounds = [f for f in bg_zip.namelist() if f.endswith(".JPEG")]
+                with zipfile.ZipFile(f"{root}/foregrounds_{'train' if train else 'val'}.zip", "r") as fg_zip:
+                    self.foregrounds = [f for f in fg_zip.namelist() if f.endswith(".WEBP")]
+            except FileNotFoundError as e:
+                print(
+                    f"RecombinationNet: {e}. Make sure to have the background and foreground zips in the root directory: found {os.listdir(root)}"
+                )
+                raise e
+            classes = set([f.split("/")[-2] for f in self.foregrounds])
+        else:
+            classes = set(os.listdir(os.path.join(root, "train" if train else "val", "foregrounds")))
+            foregrounds = []
+            backgrounds = []
+            for cls in classes:
+                foregrounds.extend(
+                    [
+                        f"{cls}/{f}"
+                        for f in os.listdir(os.path.join(root, "train" if train else "val", "foregrounds", cls))
+                    ]
+                )
+                backgrounds.extend(
+                    [
+                        f"{cls}/{f}"
+                        for f in os.listdir(os.path.join(root, "train" if train else "val", "backgrounds", cls))
+                    ]
+                )
+            self.foregrounds = foregrounds
+            self.backgrounds = backgrounds
+
         self.classes = sorted(list(classes), key=lambda x: int(x[1:]))
 
         assert os.path.exists(
@@ -236,7 +263,7 @@ class ForNet(Dataset):
     def _wrkr_info(self):
         worker_id = get_worker_info().id if get_worker_info() else 0
 
-        if worker_id not in self._zf:
+        if worker_id not in self._zf and self._mode == "zip":
             self._zf[worker_id] = {
                 "bg": zipfile.ZipFile(f"{self.root}/backgrounds_{'train' if self.train else 'val'}.zip", "r"),
                 "fg": zipfile.ZipFile(f"{self.root}/foregrounds_{'train' if self.train else 'val'}.zip", "r"),
@@ -267,6 +294,7 @@ class ForNet(Dataset):
                 and np.random.rand() < self.orig_img_prob
             )
         ):
+            # return original image
             data_key = f"{trgt_cls}/{fg_file.split('/')[-1].split('.')[0]}"
 
             if isinstance(self.orig_ds, str):
@@ -285,13 +313,19 @@ class ForNet(Dataset):
                 trgt = self.target_transform(trgt)
             return orig_img, trgt
 
-        with self._zf[worker_id]["fg"].open(fg_file) as f:
-            fg_data = BytesIO(f.read())
-            try:
-                fg_img = Image.open(fg_data).convert("RGBA")
-            except PIL.UnidentifiedImageError as e:
-                logging.error(f"Error with idx={idx}, file={self.foregrounds[idx]}")
-                raise e
+        # return ForNet image
+        if self._mode == "zip":
+            with self._zf[worker_id]["fg"].open(fg_file) as f:
+                fg_data = BytesIO(f.read())
+                try:
+                    fg_img = Image.open(fg_data).convert("RGBA")
+                except PIL.UnidentifiedImageError as e:
+                    logging.error(f"Error with idx={idx}, file={self.foregrounds[idx]}")
+                    raise e
+        else:
+            fg_img = Image.open(
+                os.path.join(self.root, "train" if self.train else "val", "foregrounds", data_key + ".WEBP")
+            ).convert("RGBA")
 
         if self.fg_transform:
             fg_img = self.fg_transform(fg_img)
@@ -306,9 +340,14 @@ class ForNet(Dataset):
             bg_idx = np.random.randint(len(self.cls_to_allowed_bg[trgt_cls]))
             bg_file = self.cls_to_allowed_bg[trgt_cls][bg_idx]
 
-        with self._zf[worker_id]["bg"].open(bg_file) as f:
-            bg_data = BytesIO(f.read())
-            bg_img = Image.open(bg_data).convert("RGB")
+        if self._mode == "zip":
+            with self._zf[worker_id]["bg"].open(bg_file) as f:
+                bg_data = BytesIO(f.read())
+                bg_img = Image.open(bg_data).convert("RGB")
+        else:
+            bg_img = Image.open(
+                os.path.join(self.root, "train" if self.train else "val", "backgrounds", bg_file)
+            ).convert("RGB")
 
         if not self.paste_pre_transform:
             bg_img = self.bg_transform(bg_img)
