@@ -131,9 +131,9 @@ class ForNet(Dataset):
         ), f"{root}/fg_bg_ratios_{'train' if train else 'val'}.json not found, provide the information or set pruning_ratio=1.0"
         with open(f"{root}/fg_bg_ratios_{'train' if train else 'val'}.json", "r") as f:
             self.fg_bg_ratios = json.load(f)
-
-        # print(f"backgrounds: {self.backgrounds[:3]}...")
-        # print(f"fg_bg_ratio_keys: {list(self.fg_bg_ratios.keys())[:3]}...")
+            if self._mode == "folder":
+                self.fg_bg_ratios = {"/".join(key.split("/")[-2:]): val for key, val in self.fg_bg_ratios.items()}
+                print(f"Renamed fg_bg_ratios keys to {list(self.fg_bg_ratios.keys())[:3]}...")
 
         if pruning_ratio <= 1.0:
             backup_backgrounds = {}
