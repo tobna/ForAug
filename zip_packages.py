@@ -2,7 +2,7 @@ import argparse
 import os
 import zipfile
 from multiprocessing import Manager, Process
-from time import sleep
+from subprocess import Popen
 
 from tqdm.auto import tqdm
 
@@ -81,44 +81,14 @@ for part in ["train", "val"]:
         folder = f"{part}/{images}"
         processes[folder].join()
 
+print("STEP: Zipping files")
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
         _EXPECTED_FILES = (1_274_557 if images == "foregrounds" else 1_274_556) if part == "train" else 49_751
         assert (
             len(files[f"{part}/{images}"]) == _EXPECTED_FILES
         ), f"{part}/{images}: Expected {_EXPECTED_FILES} files, got {len(files[f'{part}/{images}'])}"
-
-print("STEP: Zipping files")
-update_q = manager.Queue()
-pbars = {}
-pos = 0
-last_update = {}
-for part in ["train", "val"]:
-    for images in ["foregrounds", "backgrounds"]:
-        p = Process(target=_zip_files, args=(args.folder, part, images, files[f"{part}/{images}"], update_q))
-        p.start()
-        processes[f"{part}/{images}"] = p
-        pbars[f"{part}/{images}"] = tqdm(
-            total=len(files[f"{part}/{images}"]), desc=f"Zipping {part}/{images}", position=pos, smoothing=0.0
-        )
-        last_update[f"{part}/{images}"] = 0
-        pos += 1
-
-running_processes = 4
-while running_processes > 0:
-    while not update_q.empty():
-        folder, idx = update_q.get()
-        pbars[folder].update(idx - last_update[folder])
-        last_update[folder] = idx
-        if idx == len(files[folder]):
-            running_processes -= 1
-            pbars[folder].refresh()
-
-for pbar in pbars.values():
-    pbar.close()
-
-print("STEP: Finalizing")
-for part in ["train", "val"]:
-    for images in ["foregrounds", "backgrounds"]:
-        folder = f"{part}/{images}"
-        processes[folder].join()
+    Popen(
+        f"zip -r0 {images}_{part}.zip {part}/{images} | pv -lep -s {len(files[f'{part}/{images}']) + len(classes)}",
+        cwd=args.folder,
+    ).wait()
