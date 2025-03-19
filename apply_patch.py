@@ -20,7 +20,14 @@ args = parser.parse_args()
 
 
 def _extract(args):
-    zip_path, patch_name, outpath, name_start, file_ending, in_path, part = *args
+    # zip_path, patch_name, outpath, name_start, file_ending, in_path, part = *args
+    zip_path = args[0]
+    patch_name = args[1]
+    outpath = args[2]
+    name_start = args[3]
+    file_ending = args[4]
+    in_path = args[5]
+    part = args[6]
     with zipfile.ZipFile(zip_path, "r") as patch_file, (
         patch_file.open(f"{name_start}{patch_name}.{file_ending}", "r")
         if ending == "pkl"
@@ -96,4 +103,5 @@ for part in ["train", "val"]:
             max_workers=max_parallel_workers,
             desc=f"extracting {patch_file_name}",
             position=1,
+            total=len(patches),
         )
