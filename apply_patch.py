@@ -74,7 +74,7 @@ print(f"INFO: Using {max_parallel_workers} parallel workers")
 
 for part in ["train", "val"]:
     patch_files = ["val.zip"] if part == "val" else [f"{part}_{i}.zip" for i in range(0, 19)]
-    for patch_file_name in tqdm(patch_files, desc=f"processing {part}", position=0):
+    for patch_file_name in tqdm(patch_files, desc=f"processing {part}", position=0, disable=part == "val"):
         with zipfile.ZipFile(os.path.join(args.patch, patch_file_name), "r") as patch_file:
             patches = set(patch_file.namelist())
         for p_ in patches:
