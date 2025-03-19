@@ -324,7 +324,7 @@ class ForNet(Dataset):
                     raise e
         else:
             fg_img = Image.open(
-                os.path.join(self.root, "train" if self.train else "val", "foregrounds", data_key + ".WEBP")
+                os.path.join(self.root, "train" if self.train else "val", "foregrounds", fg_file)
             ).convert("RGBA")
 
         if self.fg_transform:
