@@ -1,35 +1,90 @@
 import argparse
 import os
 import zipfile
+from multiprocessing import Manager, Process
+from time import sleep
 
 from tqdm.auto import tqdm
 
 parser = argparse.ArgumentParser(description="Zip packages")
 parser.add_argument("-f", "--folder", type=str, required=True, help="ForAug folder to work in.")
-parser.add_argument("-p", "--part", choices=["train", "val"], required=True, help="Part of dataset to zip.")
-parser.add_argument("-i", "--images", choices=["foregrounds", "backgrounds"], required=True, help="Images to zip.")
 
 args = parser.parse_args()
-ending = "WEBP" if args.images == "foregrounds" else "JPEG"
+
+
+def _file_gather(folder, part, images, classes, update_dict, ret_dict):
+    update_dict[f"{part}/{images}"] = 0
+    files = []
+    ending = "WEBP" if images == "foregrounds" else "JPEG"
+    for idx, c in enumerate(classes):
+        files.append([f"{c}/{f}" for f in os.listdir(os.path.join(folder, part, images, c)) if f.endswith(ending)])
+        update_dict[f"{part}/{images}"] = idx + 1
+
+    ret_dict[f"{part}/{images}"] = [f for sublist in files for f in sublist]
+
+
+def _zip_files(folder, part, images, filelist, update_dict):
+    update_dict[f"{part}/{images}"] = 0
+    with zipfile.ZipFile(os.path.join(args.folder, f"{args.images}_{args.part}.zip"), "w") as zf:
+        for idx, file in enumerate(files):
+            zf.write(os.path.join(args.folder, args.part, args.images, file), file)
+            update_dict[f"{args.part}/{args.images}"] = idx + 1
+
+
+# maybe all in one file and multiple progress bars: https://stackoverflow.com/questions/77359940/multiple-progress-bars-with-python-multiprocessing
 
 # gather files
 classes = [
     f
-    for f in os.listdir(os.path.join(args.folder, args.part, args.images))
-    if os.path.isdir(os.path.join(args.folder, args.part, args.images, f))
+    for f in os.listdir(os.path.join(args.folder, "train", "foregrounds"))
+    if os.path.isdir(os.path.join(args.folder, "train", "foregrounds", f))
 ]
 assert len(classes) == 1000, f"Expected 1000 classes, got {len(classes)}"
 
-files = [
-    f"{c}/{f}"
-    for c in tqdm(classes, desc="gathering files")
-    for f in os.listdir(os.path.join(args.folder, args.part, args.images, c))
-    if f.endswith(ending)
-]
+print("Gathering files:")
 
-_EXPECTED_FILES = (1274557 if args.images == "foreground" else 1274556) if args.part == "train" else 49751
-assert len(files) == _EXPECTED_FILES, f"Expected {_EXPECTED_FILES} files, got {len(files)}"
+processes = {}
+manager = Manager()
+files = manager.dict()
+update_dict = manager.dict()
+for part in ["train", "val"]:
+    for images in ["foregrounds", "backgrounds"]:
+        p = Process(target=_file_gather, args=(args.folder, part, images, classes, update_dict, files))
+        p.start()
+        processes[f"{part}/{images}"] = p
 
-with zipfile.ZipFile(os.path.join(args.folder, f"{args.images}_{args.part}.zip"), "w") as zf:
-    for file in tqdm(files, desc="zipping files"):
-        zf.write(os.path.join(args.folder, args.part, args.images, file), file)
+pbars = {}
+pos = 0
+last_update = {}
+for part in ["train", "val"]:
+    for images in ["foregrounds", "backgrounds"]:
+        pbars[f"{part}/{images}"] = tqdm(total=len(classes), desc=f"{part}/{images}", position=pos)
+        last_update[f"{part}/{images}"] = 0
+        pos += 1
+
+while len(processes) > 0:
+    for folder, idx in update_dict.items():
+        pbars[folder].update(last_update[folder] - idx)
+        last_update[folder] = idx
+        if idx == len(classes):
+            pbars[folder].close()
+            del processes[folder]
+    sleep(0.01)
+
+for pbar in pbars.values():
+    pbar.close()
+
+for part in ["train", "val"]:
+    for images in ["foregrounds", "backgrounds"]:
+        _EXPECTED_FILES = (1274557 if images == "foreground" else 1274556) if part == "train" else 49751
+        assert (
+            len(files[f"{part}/{images}"]) == _EXPECTED_FILES
+        ), f"{part}/{images}: Expected {_EXPECTED_FILES} files, got {len(files[f'{part}/{images}'])}"
+
+exit()
+
+for part in ["train", "val"]:
+    for images in ["foregrounds", "backgrounds"]:
+        p = Process(target=_zip_files, args=(args.folder, part, images, files[f"{part}/{images}"], update_dict))
+        p.start()
+        processes[f"{part}/{images}"] = p
