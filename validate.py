@@ -2,7 +2,6 @@ import argparse
 import os
 import zipfile
 from multiprocessing import Manager, Process
-from subprocess import Popen
 
 from tqdm.auto import tqdm
 
@@ -28,8 +27,6 @@ def _zip_files(folder, part, images, filelist, q):
             zf.write(os.path.join(folder, part, images, file), file)
             q.put((f"{part}/{images}", idx + 1))
 
-
-# maybe all in one file and multiple progress bars: https://stackoverflow.com/questions/77359940/multiple-progress-bars-with-python-multiprocessing
 
 # gather files
 classes = [
@@ -81,15 +78,12 @@ for part in ["train", "val"]:
         folder = f"{part}/{images}"
         processes[folder].join()
 
-print("STEP: Zipping files")
+print("STEP: Validating number of files")
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
         _EXPECTED_FILES = (1_274_557 if images == "foregrounds" else 1_274_556) if part == "train" else 49_751
         assert (
             len(files[f"{part}/{images}"]) == _EXPECTED_FILES
         ), f"{part}/{images}: Expected {_EXPECTED_FILES} files, got {len(files[f'{part}/{images}'])}"
-    Popen(
-        f"/bin/zip -r0 {images}_{part}.zip {part}/{images} | /bin/pv -lep -s {len(files[f'{part}/{images}']) + len(classes)}",
-        cwd=args.folder,
-        shell=True,
-    ).wait()
+
+print("DONE: all OK")
