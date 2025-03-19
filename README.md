@@ -2,7 +2,6 @@
 [![Static Badge](https://img.shields.io/badge/Huggingface-Dataset-yellow?logo=huggingface)](https://huggingface.co/datasets/TNauen/ForNet)
 
 # ForAug
-
 ![ForAug](images/foraug.png)
 
 This is the public code repository for the paper [_ForAug: Recombining Foregrounds and Backgrounds to Improve Vision Transformer Training with Bias Mitigation_](https://www.arxiv.org/abs/2503.09399).
@@ -95,6 +94,8 @@ from fornet import ForNet
 help(ForNet.__init__)
 ```
 
+## Citation 
+Coming Soon
 
 ## ToDos
 
