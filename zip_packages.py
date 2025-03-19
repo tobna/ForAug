@@ -68,6 +68,7 @@ while len(processes) > 0:
         pbars[folder].update(idx - last_update[folder])
         last_update[folder] = idx
         if idx == len(classes):
+            print(f"Closing {folder}")
             pbars[folder].close()
             del processes[folder]
     sleep(0.01)
