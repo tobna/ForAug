@@ -78,12 +78,11 @@ for pbar in pbars.values():
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
         folder = f"{part}/{images}"
-        print(f"Closing {folder}")
         processes[folder].join()
 
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
-        _EXPECTED_FILES = (1274557 if images == "foreground" else 1274556) if part == "train" else 49751
+        _EXPECTED_FILES = (1_274_557 if images == "foregrounds" else 1_274_556) if part == "train" else 49_751
         assert (
             len(files[f"{part}/{images}"]) == _EXPECTED_FILES
         ), f"{part}/{images}: Expected {_EXPECTED_FILES} files, got {len(files[f'{part}/{images}'])}"
