@@ -16,7 +16,7 @@ This is the public code repository for the paper [_ForAug: Recombining Foregroun
 ## Using ForAug/ForNet
 
 ### Preliminaries
-To be able to download ForNet, you will need the ImageNet dataset in the usual format at <in_path>:
+To be able to download ForNet, you will need the ImageNet dataset in the usual format at `<in_path>`:
 ```
 <in_path>
 |--- train
