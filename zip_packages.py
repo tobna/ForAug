@@ -56,7 +56,9 @@ pos = 0
 last_update = {}
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
-        pbars[f"{part}/{images}"] = tqdm(total=len(classes), desc=f"Gathering {part}/{images}", position=pos)
+        pbars[f"{part}/{images}"] = tqdm(
+            total=len(classes), desc=f"Gathering {part}/{images}", position=pos, smoothing=0.0
+        )
         last_update[f"{part}/{images}"] = 0
         pos += 1
 
@@ -97,7 +99,7 @@ for part in ["train", "val"]:
         p.start()
         processes[f"{part}/{images}"] = p
         pbars[f"{part}/{images}"] = tqdm(
-            total=len(files[f"{part}/{images}"]), desc=f"Zipping {part}/{images}", position=pos
+            total=len(files[f"{part}/{images}"]), desc=f"Zipping {part}/{images}", position=pos, smoothing=0.0
         )
         last_update[f"{part}/{images}"] = 0
         pos += 1
