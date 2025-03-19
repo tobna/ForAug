@@ -17,7 +17,7 @@ def _file_gather(folder, part, images, classes, q, ret_dict):
     ending = "WEBP" if images == "foregrounds" else "JPEG"
     for idx, c in enumerate(classes):
         files.append([f"{c}/{f}" for f in os.listdir(os.path.join(folder, part, images, c)) if f.endswith(ending)])
-        q.put(([f"{part}/{images}"], idx + 1))
+        q.put((f"{part}/{images}", idx + 1))
 
     ret_dict[f"{part}/{images}"] = [f for sublist in files for f in sublist]
 
@@ -57,14 +57,13 @@ pos = 0
 last_update = {}
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
-        pbars[f"{part}/{images}"] = tqdm(total=len(classes), desc=f"{part}/{images}", position=pos, disable=True)
+        pbars[f"{part}/{images}"] = tqdm(total=len(classes), desc=f"{part}/{images}", position=pos)
         last_update[f"{part}/{images}"] = 0
         pos += 1
 
 while len(processes) > 0:
     while not update_q.empty():
         folder, idx = update_q.get()
-        print(folder, idx, last_update[folder])
         pbars[folder].update(idx - last_update[folder])
         last_update[folder] = idx
         if idx == len(classes):
