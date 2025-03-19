@@ -26,7 +26,7 @@ def _zip_files(folder, part, images, filelist, q):
     with zipfile.ZipFile(os.path.join(folder, f"{images}_{part}.zip"), "w") as zf:
         for idx, file in enumerate(filelist):
             zf.write(os.path.join(folder, part, images, file), file)
-            q.put(("{args.part}/{args.images}", idx + 1))
+            q.put(("{part}/{images}", idx + 1))
 
 
 # maybe all in one file and multiple progress bars: https://stackoverflow.com/questions/77359940/multiple-progress-bars-with-python-multiprocessing
