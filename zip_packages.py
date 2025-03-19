@@ -22,12 +22,11 @@ def _file_gather(folder, part, images, classes, q, ret_dict):
     ret_dict[f"{part}/{images}"] = [f for sublist in files for f in sublist]
 
 
-def _zip_files(folder, part, images, filelist, update_dict):
-    update_dict[f"{part}/{images}"] = 0
+def _zip_files(folder, part, images, filelist, q):
     with zipfile.ZipFile(os.path.join(args.folder, f"{args.images}_{args.part}.zip"), "w") as zf:
         for idx, file in enumerate(files):
             zf.write(os.path.join(args.folder, args.part, args.images, file), file)
-            update_dict[f"{args.part}/{args.images}"] = idx + 1
+            q.put("{args.part}/{args.images}", idx + 1)
 
 
 # maybe all in one file and multiple progress bars: https://stackoverflow.com/questions/77359940/multiple-progress-bars-with-python-multiprocessing
@@ -40,7 +39,7 @@ classes = [
 ]
 assert len(classes) == 1000, f"Expected 1000 classes, got {len(classes)}"
 
-print("Gathering files:")
+print("STEP: Gathering files")
 
 processes = {}
 manager = Manager()
@@ -57,7 +56,7 @@ pos = 0
 last_update = {}
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
-        pbars[f"{part}/{images}"] = tqdm(total=len(classes), desc=f"{part}/{images}", position=pos)
+        pbars[f"{part}/{images}"] = tqdm(total=len(classes), desc=f"Gathering {part}/{images}", position=pos)
         last_update[f"{part}/{images}"] = 0
         pos += 1
 
@@ -70,12 +69,11 @@ while running_processes > 0:
         if idx == len(classes):
             running_processes -= 1
             pbars[folder].refresh()
-    sleep(0.01)
 
-sleep(0.1)
 for pbar in pbars.values():
     pbar.close()
 
+print("STEP: Syncing file lists")
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
         folder = f"{part}/{images}"
@@ -88,10 +86,35 @@ for part in ["train", "val"]:
             len(files[f"{part}/{images}"]) == _EXPECTED_FILES
         ), f"{part}/{images}: Expected {_EXPECTED_FILES} files, got {len(files[f'{part}/{images}'])}"
 
-exit()
-
+print("STEP: Zipping files")
+update_q = manager.Queue()
+pbars = {}
+pos = 0
+last_update = {}
 for part in ["train", "val"]:
     for images in ["foregrounds", "backgrounds"]:
         p = Process(target=_zip_files, args=(args.folder, part, images, files[f"{part}/{images}"], update_q))
         p.start()
         processes[f"{part}/{images}"] = p
+        pbars[f"{part}/{images}"] = tqdm(total=len(classes), desc=f"Zipping {part}/{images}", position=pos)
+        last_update[f"{part}/{images}"] = 0
+        pos += 1
+
+running_processes = 4
+while running_processes > 0:
+    while not update_q.empty():
+        folder, idx = update_q.get()
+        pbars[folder].update(idx - last_update[folder])
+        last_update[folder] = idx
+        if idx == len(files[folder]):
+            running_processes -= 1
+            pbars[folder].refresh()
+
+for pbar in pbars.values():
+    pbar.close()
+
+print("STEP: Finalizing")
+for part in ["train", "val"]:
+    for images in ["foregrounds", "backgrounds"]:
+        folder = f"{part}/{images}"
+        processes[folder].join()
