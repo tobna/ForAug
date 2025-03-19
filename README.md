@@ -1,11 +1,16 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2503.09399-b31b1b?logo=arxiv)](https://arxiv.org/abs/2503.09399)
+[![Static Badge](https://img.shields.io/badge/Huggingface-Dataset-yellow?logo=huggingface)](https://huggingface.co/datasets/TNauen/ForNet)
 
 # ForAug
 
-This is the public code repository for the paper [_ForAug: Recombining Foregrounds and Backgrounds to Improve Vision Transformer Training with Bias Mitigation_](https://www.arxiv.org/abs/2503.09399)
+![ForAug](images/foraug.png)
+
+This is the public code repository for the paper [_ForAug: Recombining Foregrounds and Backgrounds to Improve Vision Transformer Training with Bias Mitigation_](https://www.arxiv.org/abs/2503.09399).
 
 ### Updates
 
+- [19.03.2025] We release the code to download and use ForNet in this repo :computer:
+- [19.03.2025] We release the patch files of [ForNet on Huggingface](https://huggingface.co/datasets/TNauen/ForNet) :hugs:
 - [12.03.2025] We release the preprint of [ForAug on arXiv](https://www.arxiv.org/abs/2503.09399) :spiral_notepad:
 
 ## Using ForAug/ForNet
@@ -58,10 +63,38 @@ If you want this, you can zip up the files (without compression) by using
 ```
 ./zip_up.sh <data_path>
 ```
-
 ### Creating ForNet from Scratch
+Coming soon
 
 ### Using ForNet
+To use ForAug/ForNet you need to have it available in folder or zip form (see [Downloading ForNet](#downloading-fornet)) at `data_path`.
+Additionally, you need to install the (standard) requirements from 'requirements.txt':
+```
+pip install -r requirements.txt
+```
+
+Then, just do
+```python
+from fornet import ForNet
+
+data_path = ...
+
+dataset = ForNet(
+            data_path, 
+            train=True, 
+            transform=None, 
+            background_combination="all",
+          )
+
+```
+
+For information on all possible parameters, run
+```python
+from fornet import ForNet
+
+help(ForNet.__init__)
+```
+
 
 ## ToDos
 
