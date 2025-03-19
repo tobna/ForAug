@@ -91,4 +91,5 @@ for part in ["train", "val"]:
     Popen(
         f"/bin/zip -r0 {images}_{part}.zip {part}/{images} | /bin/pv -lep -s {len(files[f'{part}/{images}']) + len(classes)}",
         cwd=args.folder,
+        shell=True,
     ).wait()
