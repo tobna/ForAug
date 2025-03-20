@@ -29,7 +29,7 @@ def _extract(args):
 
     with zipfile.ZipFile(zip_path, "r") as patch_file, (
         patch_file.open(f"{name_start}{patch_name}.{file_ending}", "r")
-        if ending == "pkl"
+        if file_ending == "pkl"
         else gzip.GzipFile(fileobj=patch_file.open(f"{name_start}{patch_name}.{file_ending}", "r"), mode="r")
     ) as pklf:
         patch_data = pickle.load(pklf)
