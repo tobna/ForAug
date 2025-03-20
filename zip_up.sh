@@ -1,6 +1,6 @@
 #! /bin/bash
 
-path = $(pwd)
+path=$(pwd)
 cd $1
 
 echo "zip train/foregrounds"
