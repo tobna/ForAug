@@ -123,7 +123,16 @@ help(ForNet.__init__)
 
 ## Citation
 
-Coming Soon
+```BibTex
+@misc{nauen2025foraug,
+      title={ForAug: Recombining Foregrounds and Backgrounds to Improve Vision Transformer Training with Bias Mitigation},
+      author={Tobias Christian Nauen and Brian Moser and Federico Raue and Stanislav Frolov and Andreas Dengel},
+      year={2025},
+      eprint={2503.09399},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+}
+```
 
 ## ToDos
 
