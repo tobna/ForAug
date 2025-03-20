@@ -5,8 +5,8 @@ from multiprocessing import Manager, Process
 
 from tqdm.auto import tqdm
 
-parser = argparse.ArgumentParser(description="Zip packages")
-parser.add_argument("-f", "--folder", type=str, required=True, help="ForAug folder to work in.")
+parser = argparse.ArgumentParser(description="Validate ForNet dataset.")
+parser.add_argument("-f", "--folder", type=str, required=True, help="ForNet folder to work in.")
 
 args = parser.parse_args()
 
