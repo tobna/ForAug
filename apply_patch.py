@@ -82,7 +82,9 @@ if __name__ == "__main__":
 
     for part in ["train", "val"]:
         patch_files = ["val.zip"] if part == "val" else [f"{part}_{i}.zip" for i in range(20)]
-        for patch_file_name in tqdm(patch_files, desc=f"processing {part}", position=0, disable=part == "val"):
+        for patch_file_name in tqdm(
+            patch_files, desc=f"processing {part}", position=0, disable=part == "val", smoothing=0.0
+        ):
             if not os.path.exists(os.path.join(args.patch, patch_file_name)):
                 tqdm.write(f"INFO: {patch_file_name} not found. Assuming it was already processed...")
                 continue
@@ -115,6 +117,7 @@ if __name__ == "__main__":
                 desc=f"extracting {patch_file_name}",
                 position=1,
                 total=len(patches),
+                smoothing=0.0,
             )
 
             if not args.keep:
