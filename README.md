@@ -27,6 +27,8 @@ ds = load_dataset(
 )
 ```
 
+⚠️ You must be authenticated and have access to the `ILSVRC/imagenet-1k` dataset on the hub, since it is used to apply the patches and get the foreground and background information.
+
 ⚠️ Be prepared to wait while the files are downloaded and the patches are applied. This will only happen the first time you download the dataset.
 
 You can pass additional parameters to control the recombination phase:
