@@ -9,12 +9,42 @@ This is the public code repository for the paper [_ForAug: Recombining Foregroun
 
 ### Updates
 
-- [19.03.2025] We release the code to download and use ForNet in this repo :computer:
-- [19.03.2025] We release the patch files of [ForNet on Huggingface](https://huggingface.co/datasets/TNauen/ForNet) :hugs:
-- [12.03.2025] We release the preprint of [ForAug on arXiv](https://www.arxiv.org/abs/2503.09399) :spiral_notepad:
+- [24.03.2025] We have [integrated ForNet into Huggingface Datasets](#with--huggingface-datasets) for easy and convenient use 🤗 💫
+- [19.03.2025] We release the code to download and use ForNet in this repo 💻
+- [19.03.2025] We release the patch files of [ForNet on Huggingface](https://huggingface.co/datasets/TNauen/ForNet) 🤗
+- [12.03.2025] We release the preprint of [ForAug on arXiv](https://www.arxiv.org/abs/2503.09399) 🗒️
 
-## Using ForAug/ForNet
+# Using ForAug/ForNet
+## With 🤗 Huggingface Datasets
+We have integrated ForNet into [🤗 huggingface datasets](https://huggingface.co/docs/datasets/index):
+```Python
+from datasets import load_dataset
 
+ds = load_dataset(
+    "TNauen/ForNet",
+    trust_remote_code=True,
+    split="train",
+)
+```
+
+You can pass additional parameters to control the recombination phase:
+- `background_combination`: Which backgrounds to combine with foregrounds. Options: "orig", "same", "all".
+- `fg_scale_jitter`: How much should the size of the foreground be changed (random ratio). Example: (0.1, 0.8).
+- `pruning_ratio`: For pruning backgrounds, with (foreground size/background size) >= <pruning_ratio>. Backgrounds from images that contain very large foreground objects are mostly computer generated and therefore relatively unnatural. Full dataset: 1.1 .
+- `fg_size_mode`: How to determine the size of the foreground, based on the foreground sizes of the foreground and background images. Options: "range", "min", "max", "mean".
+- `fg_bates_n`: Bates parameter for the distribution of the object position in the foreground. Uniform Distribution: 1. The higher the value, the more likely the object is in the center. For fg_bates_n = 0, the object is always in the center.
+- `mask_smoothing_sigma`: Sigma for the Gaussian blur of the mask edge.
+- `rel_jut_out`: How much is the foreground allowed to stand/jut out of the background (and then cut off).
+- `orig_img_prob`: Probability to use the original image, instead of the fg-bg recombinations. Options: 0.0-1.0, "linear", "revlinear", "cos".
+
+For `orig_img_prob` schedules to work, you need to set `ds.epochs` to the total number of epochs you want to train.
+Before each epoch set `ds.epoch` to the current epoch ($0 \leq$ `ds.epoch` $<$ `ds.epochs`).
+
+To recreate out evaluation metrics, you may set:
+- `fg_in_nonant`: Integer from 0 to 8. This will scale down the foreground and put it into the corresponding nonant (part of a 3x3 grid) in the image.
+- `fg_size_fact`: The foreground object is (additionally) scaled by this factor. 
+
+## Locally
 ### Preliminaries
 
 To be able to download ForNet, you will need the ImageNet dataset in the usual format at `<in_path>`:
@@ -138,4 +168,5 @@ help(ForNet.__init__)
 
 - [x] release code to download and create ForNet
 - [x] release code to use ForNet for training and evaluation
-- [ ] integrate ForNet into Huggingface Datasets
+- [x] integrate ForNet into Huggingface Datasets
+- [ ] release code for the segmentation phase
