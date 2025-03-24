@@ -27,6 +27,8 @@ ds = load_dataset(
 )
 ```
 
+⚠️ Be prepared to wait while the files are downloaded and the patches are applied. This will only happen the first time you download the dataset.
+
 You can pass additional parameters to control the recombination phase:
 - `background_combination`: Which backgrounds to combine with foregrounds. Options: "orig", "same", "all".
 - `fg_scale_jitter`: How much should the size of the foreground be changed (random ratio). Example: (0.1, 0.8).
