@@ -15,8 +15,11 @@ This is the public code repository for the paper [_ForAug: Recombining Foregroun
 - [12.03.2025] We release the preprint of [ForAug on arXiv](https://www.arxiv.org/abs/2503.09399) 🗒️
 
 # Using ForAug/ForNet
+
 ## With 🤗 Huggingface Datasets
+
 We have integrated ForNet into [🤗 huggingface datasets](https://huggingface.co/docs/datasets/index):
+
 ```Python
 from datasets import load_dataset
 
@@ -29,26 +32,29 @@ ds = load_dataset(
 
 ⚠️ You must be authenticated and have access to the `ILSVRC/imagenet-1k` dataset on the hub, since it is used to apply the patches and get the foreground and background information.
 
-⚠️ Be prepared to wait while the files are downloaded and the patches are applied. This will only happen the first time you download the dataset.
+⚠️ Be prepared to wait while the files are downloaded and the patches are applied. This will only happen the first time you load the dataset. By default, well use as many CPU cores as available on the system. To limit the number of cores used set the `MAX_WORKERS` environment variable.
 
 You can pass additional parameters to control the recombination phase:
-- `background_combination`: Which backgrounds to combine with foregrounds. Options: "orig", "same", "all".
-- `fg_scale_jitter`: How much should the size of the foreground be changed (random ratio). Example: (0.1, 0.8).
-- `pruning_ratio`: For pruning backgrounds, with (foreground size/background size) >= <pruning_ratio>. Backgrounds from images that contain very large foreground objects are mostly computer generated and therefore relatively unnatural. Full dataset: 1.1 .
-- `fg_size_mode`: How to determine the size of the foreground, based on the foreground sizes of the foreground and background images. Options: "range", "min", "max", "mean".
+
+- `background_combination`: Which backgrounds to combine with foregrounds. Options: `"orig", "same", "all"`.
+- `fg_scale_jitter`: How much should the size of the foreground be changed (random ratio). Example: `(0.1, 0.8)`.
+- `pruning_ratio`: For pruning backgrounds, with (foreground size/background size) $\geq$ <pruning_ratio>. Backgrounds from images that contain very large foreground objects are mostly computer generated and therefore relatively unnatural. Full dataset: `1.1`.
+- `fg_size_mode`: How to determine the size of the foreground, based on the foreground sizes of the foreground and background images. Options: `"range", "min", "max", "mean"`.
 - `fg_bates_n`: Bates parameter for the distribution of the object position in the foreground. Uniform Distribution: 1. The higher the value, the more likely the object is in the center. For fg_bates_n = 0, the object is always in the center.
 - `mask_smoothing_sigma`: Sigma for the Gaussian blur of the mask edge.
 - `rel_jut_out`: How much is the foreground allowed to stand/jut out of the background (and then cut off).
-- `orig_img_prob`: Probability to use the original image, instead of the fg-bg recombinations. Options: 0.0-1.0, "linear", "revlinear", "cos".
+- `orig_img_prob`: Probability to use the original image, instead of the fg-bg recombinations. Options: `0.0`-`1.0`, `"linear", "revlinear", "cos"`.
 
 For `orig_img_prob` schedules to work, you need to set `ds.epochs` to the total number of epochs you want to train.
 Before each epoch set `ds.epoch` to the current epoch ($0 \leq$ `ds.epoch` $<$ `ds.epochs`).
 
 To recreate out evaluation metrics, you may set:
-- `fg_in_nonant`: Integer from 0 to 8. This will scale down the foreground and put it into the corresponding nonant (part of a 3x3 grid) in the image.
-- `fg_size_fact`: The foreground object is (additionally) scaled by this factor. 
 
-## Locally
+- `fg_in_nonant`: Integer from 0 to 8. This will scale down the foreground and put it into the corresponding nonant (part of a 3x3 grid) in the image.
+- `fg_size_fact`: The foreground object is (additionally) scaled by this factor.
+
+## Local Installation
+
 ### Preliminaries
 
 To be able to download ForNet, you will need the ImageNet dataset in the usual format at `<in_path>`:
