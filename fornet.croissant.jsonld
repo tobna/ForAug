@@ -1,0 +1,187 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/"
+  },
+  "@type": "https://schema.org/Dataset",
+  "name": "ForNet",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "description": "ForNet is a dataset of forground objects and (neutral) backgrounds from imagenet that are reassambled to new images on the fly.",
+  "citeAs": "@misc{nauen2025foraug, title={ForAug: Recombining Foregrounds and Backgrounds to Improve Vision Transformer Training with Bias Mitigation}, author={Tobias Christian Nauen and Brian Moser and Federico Raue and Stanislav Frolov and Andreas Dengel}, year={2025}, eprint={2503.09399}, archivePrefix={arXiv}, primaryClass={cs.CV}}",
+  "license": "https://mit-license.org/",
+  "url": "https://tobias.nauen-it.de/publication/foraug/",
+  "datePublished": "2025-03-20",
+  "keywords": "data augmentation, foreground, background, data efficiency",
+  "version": 1.0,
+  "inLanguage": "en",
+  "distribution": [
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_0.zip",
+      "name": "train_0.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"ee22dc8cd67c893efca2e10c1fb9461221e9e051a48889fec8f03a814ceb9ce9"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_1.zip",
+      "name": "train_1.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	""
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_2.zip",
+      "name": "train_2.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"aad7fcd223f72c18ee58a0809de6c1bb36c608b8fabb000a94e7cc32284755cf"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_3.zip",
+      "name": "train_3.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"f381b27a68736d9b44833d17d3fec1e384a5e319e88c40f00c8b5c550d6acc73"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_4.zip",
+      "name": "train_4.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"b98aa79f594a8da32defab1894a4020769a6a940c367b1c1b88668273b90f222"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_5.zip",
+      "name": "train_5.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"0c6bc01c52e8821f16317bbf9bfabffbc37d59e5aa141d9ec8c9ede04dad8c77"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_6.zip",
+      "name": "train_6.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"d8eb0cc01718d33f95d79b528533ef05f5267f25009ab3b25709df10569d6078"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_7.zip",
+      "name": "train_7.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"bd64bf2ec9a779d9a393403b8c629b8423614b1c720208c28474a9fe436f8d01"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_8.zip",
+      "name": "train_8.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"5cd200f06cfb90a4d40239a98ab0dbea4f12b746c215813065fec569804fdfac"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_9.zip",
+      "name": "train_9.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"4b48abe3f49df3b06183e7778b04a7491cce7125c1d41455325ba774c06a8c91"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_10.zip",
+      "name": "train_10.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"f3829cef7d05bee93057c7bf7ccbd0290192f821d64c9b8f4feab83a695263de"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_11.zip",
+      "name": "train_11.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"693410958af5f7d699c68ec5749f4c1215024ffdf4ebc5a1355f0ecdec2c13a4"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_12.zip",
+      "name": "train_12.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"447a1be2b7ab4b3d79248d5c783142b58efd149a5aaa64956c8a2606162bbbd7"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_13.zip",
+      "name": "train_13.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"ccb1436a263c68a0294239b04d02613a8de5cd92e2e280362e60fc12d64fd7662"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_14.zip",
+      "name": "train_14.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"2f166fb2bb5e437777358253194eab34bf364acdd6a200b6226e68ff72c8853b"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_15.zip",
+      "name": "train_15.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"c8c2702f1c330dd547607ddc5b437f0c3610a85e1eefbad72d1625be7ef495a9"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_16.zip",
+      "name": "train_16.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"d860857e1ab1a4f21e2d61340db05a288991220ef6b047a9ca8693a5c91edb9d"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_17.zip",
+      "name": "train_17.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"fc080a0b529d99426543a78c9ea69eb7cf23c6e8150cc2e401a109005e8cc3c2"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_18.zip",
+      "name": "train_18.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"bc5084e1e5fac5a91eeb37e3a7de0b4ae8ffa249c49ab8a6913d33bad4e53b9d"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "train_19.zip",
+      "name": "train_19.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"508b391f50faf93fcfc0595bfb0d935939669c0279415b50f9edf0cd79dc2538"
+    },
+    {
+      "@type": "https://schema.org/FileObject",
+      "@id": "val.zip",
+      "name": "val.zip",
+      "contentUrl": "https://huggingface.co/datasets/TNauen/ForNet/resolve/main/train_0.zip",
+      "encodingFormat": "application/zip",
+      "sha256": 	"9cac52a7d2343f34631ad1d61b35434aa3e3d8ebb336e6e31667bd46a7bcfd24"
+    }
+  ]
+}
