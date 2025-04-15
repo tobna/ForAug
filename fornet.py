@@ -201,20 +201,23 @@ class ForNet(Dataset):
         self.fg_size_mode = fg_size_mode
         self.fg_bates_n = fg_bates_n
 
-        if isinstance(transform, (T.Compose, Compose)):
-            transform = transform.transforms
-
         # do cropping and resizing mainly on background; paste foreground on top later
-        self.bg_transform = []
-        self.join_transform = []
-        for tf in transform:
-            if isinstance(tf, tuple(self._bg_transforms)) and not paste_pre_transform:
-                self.bg_transform.append(tf)
-            else:
-                self.join_transform.append(tf)
+        if not paste_pre_transform:
+            if isinstance(transform, (T.Compose, Compose)):
+                transform = transform.transforms
 
-        self.bg_transform = T.Compose(self.bg_transform)
-        self.join_transform = T.Compose(self.join_transform)
+            for tf in transform:
+                self.bg_transform = []
+                self.join_transform = []
+                if isinstance(tf, tuple(self._bg_transforms)) and not paste_pre_transform:
+                    self.bg_transform.append(tf)
+                else:
+                    self.join_transform.append(tf)
+
+                self.bg_transform = T.Compose(self.bg_transform)
+                self.join_transform = T.Compose(self.join_transform)
+        else:
+            self.join_transform = transform
 
         self.trgt_map = {cls: i for i, cls in enumerate(self.classes)}
 
