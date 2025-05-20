@@ -103,6 +103,7 @@ class ForNet(Dataset):
         self.rel_jut_out = rel_jut_out
         self.size_fact = size_fact
         self.fg_in_nonant = fg_in_nonant
+        self._orig_ds_file_type = _orig_ds_file_type
         assert fg_in_nonant is None or -1 <= fg_in_nonant < 9, f"fg_in_nonant={fg_in_nonant} not in [0, 8] or None"
 
         self.orig_img_prob = orig_img_prob
@@ -254,7 +255,6 @@ class ForNet(Dataset):
                 ):
                     orig_ds = f"{orig_ds}/{'train' if train else 'val'}"
                 self.key_to_orig_idx = None
-                self._orig_ds_file_type = _orig_ds_file_type
             self.orig_ds = orig_ds
 
     @property
