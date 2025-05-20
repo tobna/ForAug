@@ -409,6 +409,18 @@ class ForNet(Dataset):
 
         return bg_img, None
 
+    def load_original_image(self):
+        return (
+            (self.orig_img_prob == "linear" and np.random.rand() < self._epoch / self.epochs)
+            or (self.orig_img_prob == "revlinear" and np.random.rand() < (self._epoch - self.epochs) / self.epochs)
+            or (self.orig_img_prob == "cos" and np.random.rand() > np.cos(np.pi * self._epoch / (2 * self.epochs)))
+            or (
+                isinstance(self.orig_img_prob, float)
+                and self.orig_img_prob > 0.0
+                and np.random.rand() < self.orig_img_prob
+            )
+        )
+
     def __getitem__(self, idx):
         """Get the foreground at index idx and combine it with a (random) background.
 
@@ -423,16 +435,7 @@ class ForNet(Dataset):
         fg_file = self.foregrounds[idx]
         trgt_cls = fg_file.split("/")[-2]
 
-        if (
-            (self.orig_img_prob == "linear" and np.random.rand() < self._epoch / self.epochs)
-            or (self.orig_img_prob == "revlinear" and np.random.rand() < (self._epoch - self.epochs) / self.epochs)
-            or (self.orig_img_prob == "cos" and np.random.rand() > np.cos(np.pi * self._epoch / (2 * self.epochs)))
-            or (
-                isinstance(self.orig_img_prob, float)
-                and self.orig_img_prob > 0.0
-                and np.random.rand() < self.orig_img_prob
-            )
-        ):
+        if self.load_original_image():
             # return original image
             data_key = f"{trgt_cls}/{fg_file.split('/')[-1].split('.')[0]}"
 
@@ -453,6 +456,7 @@ class ForNet(Dataset):
             return orig_img, trgt
 
         # return ForNet image
+        # load the foreground image
         if self._mode == "zip":
             with self._zf[worker_id]["fg"].open(fg_file) as f:
                 fg_data = BytesIO(f.read())
@@ -466,6 +470,7 @@ class ForNet(Dataset):
                 os.path.join(self.root, "train" if self.train else "val", "foregrounds", fg_file)
             ).convert("RGBA")
 
+        # get the background image index
         if self.background_combination == "all":
             bg_idx = np.random.randint(len(self.backgrounds))
             bg_file = self.backgrounds[bg_idx]
@@ -475,6 +480,7 @@ class ForNet(Dataset):
             bg_idx = np.random.randint(len(self.cls_to_allowed_bg[trgt_cls]))
             bg_file = self.cls_to_allowed_bg[trgt_cls][bg_idx]
 
+        # load the background image
         if self._mode == "zip":
             with self._zf[worker_id]["bg"].open(bg_file) as f:
                 bg_data = BytesIO(f.read())
@@ -484,18 +490,20 @@ class ForNet(Dataset):
                 os.path.join(self.root, "train" if self.train else "val", "backgrounds", bg_file)
             ).convert("RGB")
 
+        # background only transformations
         if not self.paste_pre_transform:
             bg_img = self.bg_transform(bg_img)
 
-        # print(f"background: size={bg_size} area={bg_area}")
-        # print(f"fg_file={fg_file}, fg_bg_ratio_keys={list(self.fg_bg_ratios.keys())[:3]}...")
+        # load the fg/bg ratios
         orig_fg_ratio = self.fg_bg_ratios[fg_file.replace("foregrounds", "backgrounds").replace("WEBP", "JPEG")]
         bg_fg_ratio = self.fg_bg_ratios[bg_file]
 
+        # recombine
         comb_img, fg_mask = self.recombine(
             fg_img=fg_img, bg_img=bg_img, fg_bg_ratio_foreground=orig_fg_ratio, fg_bg_ratio_background=bg_fg_ratio
         )
 
+        # transforms for recombined image
         if self.return_fg_masks:
             comb_img = T.ToTensor()(comb_img)
 
@@ -507,6 +515,7 @@ class ForNet(Dataset):
         elif self.join_transform:
             comb_img = self.join_transform(comb_img)
 
+        # get the classification target
         if trgt_cls not in self.trgt_map:
             raise ValueError(f"trgt_cls={trgt_cls} not in trgt_map: {self.trgt_map}")
         trgt = self.trgt_map[trgt_cls]
