@@ -9,7 +9,7 @@
 This is the public code repository for the paper [_ForAug: Recombining Foregrounds and Backgrounds to Improve Vision Transformer Training with Bias Mitigation_](https://www.arxiv.org/abs/2503.09399).
 
 ### Updates
-- 07.10.2025 We release the code for the [Segmentation Phase](#creating-fornet-from-scratch) 🖼️🔍
+- [07.10.2025] We release the code for the [Segmentation Phase](#creating-fornet-from-scratch) 🖼️🔍
 - [01.04.2025] We have created a [Project Page](https://tobias.nauen-it.de/publication/foraug/) for ForAug [🔗](https://tobias.nauen-it.de/publication/foraug/)
 - [24.03.2025] We have [integrated ForNet into Huggingface Datasets](#with--huggingface-datasets) for easy and convenient use 🤗 💫
 - [19.03.2025] We release the code to download and use ForNet in this repo 💻
