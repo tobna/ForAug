@@ -1,0 +1,10 @@
+diffusers==0.32.2
+transformers==4.48.2
+torch==2.6.0a0+ecf3bae40a.nv25.1
+tqdm==4.67.1
+torchvision==0.20.0a0
+pillow==11.1.0
+opencv==4.10.0
+opencv-python==24.11.0.86
+numpy==1.26.4
+nltk==3.9.1
