@@ -1,4 +1,4 @@
-[![Static Badge](https://img.shields.io/badge/Project%20Page-blue)](https://tobias.nauen-it.de/publication/foraug/)
+[![Static Badge](https://img.shields.io/badge/Project%20Page-blue)](https://nauen-it.de/publication/foraug/)
 [![arXiv](https://img.shields.io/badge/arXiv-2503.09399-b31b1b?logo=arxiv)](https://arxiv.org/abs/2503.09399)
 [![Huggingface](https://img.shields.io/badge/Huggingface-Dataset-yellow?logo=huggingface)](https://huggingface.co/datasets/TNauen/ForNet)
 
@@ -11,7 +11,7 @@ This is the public code repository for the paper [*ForAug*: Mitigating Biases an
 ### Updates
 - [13.11.2025] We have updated the [ForAug arxiv preprint](https://arxiv.org/abs/2503.09399) with new experiments and models 🗞️
 - [07.10.2025] We release the code for the [Segmentation Phase](#creating-fornet-from-scratch) 🖼️🔍
-- [01.04.2025] We have created a [Project Page](https://tobias.nauen-it.de/publication/foraug/) for ForAug [🔗](https://tobias.nauen-it.de/publication/foraug/)
+- [01.04.2025] We have created a [Project Page](https://nauen-it.de/publication/foraug/) for ForAug [🔗](https://nauen-it.de/publication/foraug/)
 - [24.03.2025] We have [integrated ForNet into Huggingface Datasets](#with--huggingface-datasets) for easy and convenient use [beta] 🤗 💫
 - [19.03.2025] We release the code to download and use ForNet in this repo 💻
 - [19.03.2025] We release the patch files of [ForNet on Huggingface](https://huggingface.co/datasets/TNauen/ForNet) 🤗
